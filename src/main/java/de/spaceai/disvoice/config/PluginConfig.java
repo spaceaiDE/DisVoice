@@ -15,6 +15,7 @@ public class PluginConfig {
         if(!file.exists()) {
             FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
             fileConfiguration.set("discord.token", "test");
+            fileConfiguration.set("voicechat.distance", 8);
             fileConfiguration.set("discord.voiceCategoryId", "test");
             fileConfiguration.set("discord.lobbyChannelId", "test");
             fileConfiguration.set("discord.guildId", "test");

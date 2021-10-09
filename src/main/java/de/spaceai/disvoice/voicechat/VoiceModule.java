@@ -112,7 +112,8 @@ public class VoiceModule {
          */
         List<Player> nearByPlayers = Bukkit.getOnlinePlayers()
                 .stream().filter(p -> !p.getName().equals(player.getName()))
-                .filter(p -> p.getLocation().distance(player.getLocation()) < 8)
+                .filter(p -> p.getLocation().distance(player.getLocation()) < this.disVoice.getPluginConfig()
+                        .<Integer>getObject("voicechat.distance"))
                 .filter(p -> this.disVoice.getLinkedAccountCache().existLinkedAccount(p.getUniqueId()))
                 .filter(this::voiceChatActive)
                 .collect(Collectors.toList());
