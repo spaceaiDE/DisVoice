@@ -1,0 +1,9 @@
+name: DisVoice
+version: '${project.version}'
+main: de.spaceai.disvoice.DisVoice
+api-version: 1.17
+authors: [ spaceaiDE ]
+
+commands:
+  link:
+  unlink:
