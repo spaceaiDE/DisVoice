@@ -1,6 +1,7 @@
 package de.spaceai.disvoice.listener;
 
 import de.spaceai.disvoice.DisVoice;
+import de.spaceai.disvoice.database.account.LinkedAccount;
 import net.dv8tion.jda.api.entities.Member;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,11 +31,16 @@ public class PlayerMoveListener implements Listener {
         if(this.disVoice.getVoiceModule().getGuild() == null)
             return;
 
-        Member member = this.disVoice.getVoiceModule().getGuild().getMemberById(this.disVoice
-                .getLinkedAccountCache().getLinkedAccount(player.getUniqueId()).discordId());
+        LinkedAccount linkedAccount = this.disVoice.getLinkedAccountCache().getLinkedAccount(player.getUniqueId());
+        Member member = this.disVoice.getVoiceModule().getGuild().getMemberById(linkedAccount.discordId());
 
-        if(member.getVoiceState() == null || !member.getVoiceState().inVoiceChannel() ||
-        !member.getVoiceState().getChannel().getParent().equals(this.disVoice.getVoiceModule().getVoiceCategory())) {
+        if(member == null) {
+            this.disVoice.getVoiceModule().getGuild().retrieveMemberById(linkedAccount.discordId());
+            return;
+        }
+
+        if(member.getVoiceState() == null || !member.getVoiceState().inAudioChannel() ||
+        !member.getVoiceState().getChannel().getParentCategory().equals(this.disVoice.getVoiceModule().getVoiceCategory())) {
             if(player.hasPermission("disvoice.bypass")) return;
             player.teleport(event.getFrom());
             event.setCancelled(true);

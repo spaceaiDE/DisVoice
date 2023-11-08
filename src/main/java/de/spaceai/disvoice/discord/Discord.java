@@ -4,8 +4,11 @@ import de.spaceai.disvoice.DisVoice;
 import de.spaceai.disvoice.discord.listener.MessageListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 
 import javax.security.auth.login.LoginException;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class Discord {
 
@@ -19,7 +22,8 @@ public class Discord {
         this.disVoice = disVoice;
         this.token = token;
 
-        this.jdaBuilder = JDABuilder.createDefault(this.token);
+        this.jdaBuilder = JDABuilder.createDefault(this.token)
+                .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_VOICE_STATES);
         this.jdaBuilder.addEventListeners(new MessageListener(this.disVoice));
 
     }
@@ -27,7 +31,7 @@ public class Discord {
     public void connect() {
         try {
             this.jda = this.jdaBuilder.build();
-        } catch (LoginException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

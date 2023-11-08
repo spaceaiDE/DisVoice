@@ -1,8 +1,6 @@
 package de.spaceai.disvoice.voicechat;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Queues;
 import de.spaceai.disvoice.DisVoice;
 import de.spaceai.disvoice.config.PluginConfig;
 import de.spaceai.disvoice.database.Database;
@@ -10,11 +8,18 @@ import de.spaceai.disvoice.database.account.LinkedAccountCache;
 import de.spaceai.disvoice.discord.Discord;
 import de.spaceai.disvoice.util.ObjectQueue;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.channel.concrete.Category;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
+import net.dv8tion.jda.internal.entities.channel.concrete.CategoryImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class VoiceModule {
@@ -103,9 +108,9 @@ public class VoiceModule {
             return;
         if (member.getVoiceState() == null)
             return;
-        if (!member.getVoiceState().inVoiceChannel())
+        if (!member.getVoiceState().inAudioChannel())
             return;
-        if (!member.getVoiceState().getChannel().getParent().equals(this.voiceCategory))
+        if (!member.getVoiceState().getChannel().getParentCategory().equals(this.voiceCategory))
             return;
         /**
          * Search for players in near
@@ -123,7 +128,7 @@ public class VoiceModule {
          */
         if (nearByPlayers.size() == 0) {
             if(!member.getVoiceState().getChannel().equals(this.lobbyVoiceChannel)) {
-                VoiceChannel voiceChannel = member.getVoiceState().getChannel();
+                VoiceChannel voiceChannel = (VoiceChannel) member.getVoiceState().getChannel();
                 this.guild.moveVoiceMember(member, this.lobbyVoiceChannel).queue();
                 if(existsVoiceChatData(player)) {
                     VoiceChatData voiceChatData = getVoiceChatData(player);
@@ -197,9 +202,9 @@ public class VoiceModule {
                     .getLinkedAccount(player.getUniqueId()).discordId());
             if(playerMemeber.getVoiceState() == null)
                 return false;
-            if(!playerMemeber.getVoiceState().inVoiceChannel())
+            if(!playerMemeber.getVoiceState().inAudioChannel())
                 return false;
-            if(!playerMemeber.getVoiceState().getChannel().getParent().equals(this.voiceCategory))
+            if(!playerMemeber.getVoiceState().getChannel().getParentCategory().equals(this.voiceCategory))
                 return false;
             return true;
         }

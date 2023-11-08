@@ -1,6 +1,6 @@
 package de.spaceai.disvoice.voicechat;
 
-import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import org.bukkit.entity.Player;
 
 public class VoiceChatData {
